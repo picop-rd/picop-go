@@ -1,14 +1,21 @@
 package header
 
 import (
+	"bufio"
 	"bytes"
+	"errors"
 	"io"
+)
+
+var (
+	TestHeaderString = "BOPP TEST"
+	ErrNoBoPP        = errors.New("BoPP: signature not present")
 )
 
 type Header struct{}
 
 func (h *Header) String() string {
-	return "BOPP TEST"
+	return TestHeaderString
 }
 
 func (h *Header) Format() []byte {
@@ -19,4 +26,19 @@ func (h *Header) Format() []byte {
 func (h *Header) WriteTo(w io.Writer) (int64, error) {
 	buf := h.Format()
 	return bytes.NewBuffer(buf).WriteTo(w)
+}
+
+func Read(reader *bufio.Reader) (*Header, error) {
+	sign, err := reader.Peek(len([]byte(TestHeaderString)))
+	if err != nil {
+		if err == io.EOF {
+			return nil, ErrNoBoPP
+		}
+		return nil, err
+	}
+
+	if bytes.Equal(sign, []byte(TestHeaderString)) {
+		return &Header{}, nil
+	}
+	return nil, ErrNoBoPP
 }
