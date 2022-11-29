@@ -29,7 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("BCoP Header Accepted: %s", header)
+	fmt.Printf("BCoP Header Accepted: %s\n", header)
 
 	_, err = io.Copy(os.Stdout, bconn)
 	if err != nil {

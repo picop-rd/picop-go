@@ -57,7 +57,7 @@ func (c *Conn) ReadHeader() (*header.Header, error) {
 
 func (c *Conn) readHeader() {
 	c.rOnce.Do(func() {
-		c.rHeader, c.rErr = header.Read(c.bufReader)
+		c.rHeader, c.rErr = header.Parse(c.bufReader)
 	})
 }
 
