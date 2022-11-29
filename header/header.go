@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	TestHeaderString = "BCoP TEST"
+	TestHeaderString = "BCoP TEST\n"
 	ErrNoBCoP        = errors.New("BCoP: signature not present")
 )
 
