@@ -1,2 +1,2 @@
-# bopp-go
-BoPP Go実装
+# bcop-go
+BCoP Go実装

@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"net"
 
-	"github.com/hiroyaonoe/bopp-go/header"
+	"github.com/hiroyaonoe/bcop-go/header"
 )
 
 type Conn struct {

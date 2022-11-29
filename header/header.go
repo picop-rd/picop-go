@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	TestHeaderString = "BOPP TEST"
-	ErrNoBoPP        = errors.New("BoPP: signature not present")
+	TestHeaderString = "BCoP TEST"
+	ErrNoBCoP        = errors.New("BCoP: signature not present")
 )
 
 type Header struct{}
@@ -32,7 +32,7 @@ func Read(reader *bufio.Reader) (*Header, error) {
 	sign, err := reader.Peek(len([]byte(TestHeaderString)))
 	if err != nil {
 		if err == io.EOF {
-			return nil, ErrNoBoPP
+			return nil, ErrNoBCoP
 		}
 		return nil, err
 	}
@@ -40,5 +40,5 @@ func Read(reader *bufio.Reader) (*Header, error) {
 	if bytes.Equal(sign, []byte(TestHeaderString)) {
 		return &Header{}, nil
 	}
-	return nil, ErrNoBoPP
+	return nil, ErrNoBCoP
 }
