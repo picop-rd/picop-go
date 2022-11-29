@@ -5,7 +5,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/hiroyaonoe/bcop-go/header"
+	"github.com/hiroyaonoe/bcop-go/protocol/header"
 )
 
 type Conn struct {

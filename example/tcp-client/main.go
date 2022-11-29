@@ -6,8 +6,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/hiroyaonoe/bcop-go/header"
-	bcopnet "github.com/hiroyaonoe/bcop-go/net"
+	"github.com/hiroyaonoe/bcop-go/protocol/header"
+	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
 )
 
 func main() {
