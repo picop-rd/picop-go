@@ -47,6 +47,14 @@ func (c *Conn) Write(b []byte) (n int, err error) {
 	return c.Conn.Write(b)
 }
 
+func (c *Conn) ReadHeader() (*header.Header, error) {
+	c.readHeader()
+	if c.rErr != nil {
+		return nil, c.rErr
+	}
+	return c.rHeader, nil
+}
+
 func (c *Conn) readHeader() {
 	c.rOnce.Do(func() {
 		c.rHeader, c.rErr = header.Read(c.bufReader)

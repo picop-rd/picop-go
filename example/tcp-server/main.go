@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -23,6 +24,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	header, err := bconn.ReadHeader()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("BCoP Header Accepted: %s", header)
 
 	_, err = io.Copy(os.Stdout, bconn)
 	if err != nil {
