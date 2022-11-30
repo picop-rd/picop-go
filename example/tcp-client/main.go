@@ -24,7 +24,7 @@ func main() {
 	defer conn.Close()
 
 	bag := TestBaggage()
-	h := header.NewV1(bag)
+	h := header.NewV1(bag.String())
 	bconn := bcopnet.NewConn(conn, h)
 
 	_, err = io.Copy(bconn, os.Stdin)

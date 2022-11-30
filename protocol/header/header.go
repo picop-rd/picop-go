@@ -6,8 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-
-	"go.opentelemetry.io/otel/baggage"
 )
 
 var (
@@ -15,28 +13,28 @@ var (
 
 	ErrNoBCoP              = errors.New("BCoP: signature not present")
 	ErrCannotReadV1Header  = errors.New("BCoP: cannot read v1 header")
-	ErrCannotParseBaggage  = errors.New("BCoP: cannot parse baggage")
 	ErrLineMustEndWithCrlf = errors.New("BCoP: header must end with \\r\\n")
 )
 
 type Header struct {
 	version byte
-	baggage baggage.Baggage
+	value   string
 }
 
-func NewV1(bag baggage.Baggage) *Header {
+// NewVi return BCoP V1 Header. The value must be baggage format. (Must not contain CR and LF)
+func NewV1(value string) *Header {
 	return &Header{
 		version: 1,
-		baggage: bag,
+		value:   value,
 	}
 }
 
 func (h *Header) String() string {
-	return fmt.Sprintf("BCoP Header{ version: %d, baggage: %s }", h.version, h.baggage.String())
+	return fmt.Sprintf("BCoP Header{ version: %d, value: %s }", h.version, h.value)
 }
 
 func (h *Header) Format() []byte {
-	ret := append(SignatureV1, []byte(h.baggage.String())...)
+	ret := append(SignatureV1, []byte(h.value)...)
 	return append(ret, '\r', '\n')
 }
 
@@ -78,14 +76,8 @@ func parseV1(r *bufio.Reader) (*Header, error) {
 	if len(buf) < 2 || buf[len(buf)-2] != '\r' {
 		return nil, ErrLineMustEndWithCrlf
 	}
-	header := &Header{
+	return &Header{
 		version: 1,
-	}
-	bagStr := string(buf[:len(buf)-2])
-	bag, err := baggage.Parse(bagStr)
-	if err != nil {
-		return nil, fmt.Errorf(ErrCannotParseBaggage.Error()+": %v", err)
-	}
-	header.baggage = bag
-	return header, nil
+		value:   string(buf[:len(buf)-2]),
+	}, nil
 }
