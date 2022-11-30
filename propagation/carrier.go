@@ -10,20 +10,26 @@ const baggageKey = "baggage"
 // BCoPCarrier adapts BCoP to satisfy the OpenTelemetry TextMapCarrier interface.
 // Warning: The key must be "baggage". In the future, this will be an HTTP Header compliant key-value store.
 // (See https://opentelemetry.io/docs/reference/specification/context/api-propagators/#textmap-propagator )
-type BCoPCarrier header.Header
+type BCoPCarrier struct {
+	*header.Header
+}
 
 var _ propagation.TextMapCarrier = BCoPCarrier{}
 
+func NewBCoPCarrier(h *header.Header) BCoPCarrier {
+	return BCoPCarrier{h}
+}
+
 func (bc BCoPCarrier) Get(key string) string {
 	if key == baggageKey {
-		return bc.Value
+		return bc.Header.Get()
 	}
 	return ""
 }
 
 func (bc BCoPCarrier) Set(key, value string) {
 	if key == baggageKey {
-		bc.Value = value
+		bc.Header.Set(value)
 		return
 	}
 	return

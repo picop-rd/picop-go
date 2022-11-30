@@ -18,28 +18,36 @@ var (
 
 type Header struct {
 	version byte
-	Value   string
+	value   string
 }
 
-// NewV1 return BCoP V1 Header. The Value must be baggage format. (Must not contain CR and LF)
+// NewV1 return BCoP V1 Header. The value must be baggage format. (Must not contain CR and LF)
 func NewV1(value string) *Header {
 	return &Header{
 		version: 1,
-		Value:   value,
+		value:   value,
 	}
 }
 
-func (h *Header) String() string {
-	return fmt.Sprintf("BCoP Header{ version: %d, Value: %s }", h.version, h.Value)
+func (h Header) Get() string {
+	return h.value
 }
 
-func (h *Header) Format() []byte {
-	ret := append(SignatureV1, []byte(h.Value)...)
+func (h *Header) Set(value string) {
+	h.value = value
+}
+
+func (h Header) String() string {
+	return fmt.Sprintf("BCoP Header{ version: %d, value: %s }", h.version, h.value)
+}
+
+func (h Header) Format() []byte {
+	ret := append(SignatureV1, []byte(h.value)...)
 	return append(ret, '\r', '\n')
 }
 
 // WriteTo renders a proxy protocol header in a format and writes it to an io.Writer.
-func (h *Header) WriteTo(w io.Writer) (int64, error) {
+func (h Header) WriteTo(w io.Writer) (int64, error) {
 	buf := h.Format()
 	return bytes.NewBuffer(buf).WriteTo(w)
 }
@@ -78,6 +86,6 @@ func parseV1(r *bufio.Reader) (*Header, error) {
 	}
 	return &Header{
 		version: 1,
-		Value:   string(buf[:len(buf)-2]),
+		value:   string(buf[:len(buf)-2]),
 	}, nil
 }
