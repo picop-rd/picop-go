@@ -18,23 +18,23 @@ var (
 
 type Header struct {
 	version byte
-	value   string
+	Value   string
 }
 
-// NewVi return BCoP V1 Header. The value must be baggage format. (Must not contain CR and LF)
+// NewVi return BCoP V1 Header. The Value must be baggage format. (Must not contain CR and LF)
 func NewV1(value string) *Header {
 	return &Header{
 		version: 1,
-		value:   value,
+		Value:   value,
 	}
 }
 
 func (h *Header) String() string {
-	return fmt.Sprintf("BCoP Header{ version: %d, value: %s }", h.version, h.value)
+	return fmt.Sprintf("BCoP Header{ version: %d, Value: %s }", h.version, h.Value)
 }
 
 func (h *Header) Format() []byte {
-	ret := append(SignatureV1, []byte(h.value)...)
+	ret := append(SignatureV1, []byte(h.Value)...)
 	return append(ret, '\r', '\n')
 }
 
@@ -78,6 +78,6 @@ func parseV1(r *bufio.Reader) (*Header, error) {
 	}
 	return &Header{
 		version: 1,
-		value:   string(buf[:len(buf)-2]),
+		Value:   string(buf[:len(buf)-2]),
 	}, nil
 }
