@@ -21,7 +21,7 @@ type Header struct {
 	Value   string
 }
 
-// NewVi return BCoP V1 Header. The Value must be baggage format. (Must not contain CR and LF)
+// NewV1 return BCoP V1 Header. The Value must be baggage format. (Must not contain CR and LF)
 func NewV1(value string) *Header {
 	return &Header{
 		version: 1,
