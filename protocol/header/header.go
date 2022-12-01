@@ -1,7 +1,6 @@
 package header
 
 import (
-	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -11,9 +10,8 @@ import (
 var (
 	SignatureV1 = []byte{'\x0D', '\x0A', '\x0D', '\x0A', '\x00', '\x0D', '\x0A', '\x51', '\x55', '\x49', '\x54', '\x0A', '\x01'}
 
-	ErrNoBCoP              = errors.New("BCoP: signature not present")
-	ErrCannotReadV1Header  = errors.New("BCoP: cannot read v1 header")
-	ErrLineMustEndWithCrlf = errors.New("BCoP: header must end with \\r\\n")
+	ErrNoBCoP             = errors.New("BCoP: signature not present")
+	ErrCannotReadV1Header = errors.New("BCoP: cannot read v1 header")
 )
 
 type Header struct {
@@ -42,8 +40,9 @@ func (h Header) String() string {
 }
 
 func (h Header) Format() []byte {
-	ret := append(SignatureV1, []byte(h.value)...)
-	return append(ret, '\r', '\n')
+	b := []byte(h.value)
+	ret := append(SignatureV1, byte(len(b)))
+	return append(ret, b...)
 }
 
 // WriteTo renders a proxy protocol header in a format and writes it to an io.Writer.
@@ -52,7 +51,7 @@ func (h Header) WriteTo(w io.Writer) (int64, error) {
 	return bytes.NewBuffer(buf).WriteTo(w)
 }
 
-func Parse(r *bufio.Reader) (*Header, error) {
+func Parse(r io.Reader) (*Header, error) {
 	sign := make([]byte, 13)
 	_, err := r.Read(sign)
 	if err != nil {
@@ -68,24 +67,21 @@ func Parse(r *bufio.Reader) (*Header, error) {
 	return nil, ErrNoBCoP
 }
 
-func parseV1(r *bufio.Reader) (*Header, error) {
-	buf := []byte{}
-	for {
-		b, err := r.ReadByte()
-		if err != nil {
-			return nil, fmt.Errorf(ErrCannotReadV1Header.Error()+": %v", err)
-		}
-		buf = append(buf, b)
-		if b == '\n' {
-			break
-		}
+func parseV1(r io.Reader) (*Header, error) {
+	length := make([]byte, 1)
+	_, err := r.Read(length)
+	if err != nil {
+		return nil, fmt.Errorf(ErrCannotReadV1Header.Error()+": %v", err)
 	}
 
-	if len(buf) < 2 || buf[len(buf)-2] != '\r' {
-		return nil, ErrLineMustEndWithCrlf
+	data := make([]byte, int(length[0]))
+	_, err = r.Read(data)
+	if err != nil {
+		return nil, fmt.Errorf(ErrCannotReadV1Header.Error()+": %v", err)
 	}
+
 	return &Header{
 		version: 1,
-		value:   string(buf[:len(buf)-2]),
+		value:   string(data),
 	}, nil
 }

@@ -17,12 +17,12 @@ func TestParse(t *testing.T) {
 	}{
 		{
 			name:      "headerのみを正常に受理できる",
-			input:     append(SignatureV1, []byte("key1=value1\r\n")...),
+			input:     makeV1Header(11, "key1=value1"),
 			wantValue: "key1=value1",
 		},
 		{
 			name:      "header+追加データを正常に受理できる",
-			input:     append(SignatureV1, []byte("key1=value1\r\ntesttest")...),
+			input:     makeV1Header(11, "key1=value1testtest"),
 			wantValue: "key1=value1",
 		},
 	}
@@ -40,4 +40,31 @@ func TestParse(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestHeader_Format(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  []byte
+	}{
+		{
+			name:  "正しくヘッダをフォーマットできる",
+			value: "key1=value1",
+			want:  makeV1Header(11, "key1=value1"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h := NewV1(tt.value)
+			if diff := cmp.Diff(tt.want, h.Format()); diff != "" {
+				t.Errorf("Header.Format() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func makeV1Header(l int, d string) []byte {
+	ret := append(SignatureV1, byte(l))
+	return append(ret, []byte(d)...)
 }
