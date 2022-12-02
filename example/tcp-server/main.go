@@ -20,7 +20,7 @@ func main() {
 	conn, err := ln.Accept()
 	defer conn.Close()
 
-	bconn := bcopnet.NewConn(conn, nil)
+	bconn := bcopnet.ReceiverConn(conn)
 	if err != nil {
 		log.Fatal(err)
 	}

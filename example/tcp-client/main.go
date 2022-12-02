@@ -25,7 +25,7 @@ func main() {
 
 	bag := TestBaggage()
 	h := header.NewV1(bag.String())
-	bconn := bcopnet.NewConn(conn, h)
+	bconn := bcopnet.SenderConn(conn, h)
 
 	_, err = io.Copy(bconn, os.Stdin)
 	if err != nil {

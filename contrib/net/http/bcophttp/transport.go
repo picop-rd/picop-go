@@ -47,7 +47,7 @@ func wrapDialContext(dc func(ctx context.Context, network, addr string) (net.Con
 		h := header.NewV1("")
 		propagator.Inject(ctx, bcopprop.NewBCoPCarrier(h))
 
-		bconn := bcopnet.NewConn(conn, h)
+		bconn := bcopnet.SenderConn(conn, h)
 		return bconn, err
 	}
 }
