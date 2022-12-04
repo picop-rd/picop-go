@@ -17,10 +17,12 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	conn, err := ln.Accept()
+	bln := bcopnet.NewListener(ln)
+
+	conn, err := bln.Accept()
 	defer conn.Close()
 
-	bconn := bcopnet.ReceiverConn(conn)
+	bconn := conn.(*bcopnet.Conn)
 	if err != nil {
 		log.Fatal(err)
 	}
