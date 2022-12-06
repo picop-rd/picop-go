@@ -19,13 +19,8 @@ func main() {
 
 	bln := bcopnet.NewListener(ln)
 
-	conn, err := bln.Accept()
-	defer conn.Close()
-
-	bconn := conn.(*bcopnet.Conn)
-	if err != nil {
-		log.Fatal(err)
-	}
+	bconn, err := bln.AcceptWithBCoPConn()
+	defer bconn.Close()
 
 	header, err := bconn.ReadHeader()
 	if err != nil {
