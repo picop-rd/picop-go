@@ -8,6 +8,7 @@ import (
 	"os"
 
 	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	"golang.org/x/sync/errgroup"
 )
 
 func main() {
@@ -20,6 +21,9 @@ func main() {
 	bln := bcopnet.NewListener(ln)
 
 	bconn, err := bln.AcceptWithBCoPConn()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 	defer bconn.Close()
 
 	header, err := bconn.ReadHeader()
@@ -28,11 +32,11 @@ func main() {
 	}
 	fmt.Printf("BCoP Header Accepted: %s\n", header)
 
-	_, err = io.Copy(os.Stdout, bconn)
-	if err != nil {
-		if err == io.EOF {
-			return
-		}
-		log.Fatalf(err.Error())
-	}
+	var eg errgroup.Group
+
+	eg.Go(func() error { _, err := io.Copy(bconn, os.Stdin); return err })
+	eg.Go(func() error { _, err := io.Copy(os.Stdout, bconn); return err })
+
+	err = eg.Wait()
+	log.Fatal(err)
 }

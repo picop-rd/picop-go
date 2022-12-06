@@ -9,6 +9,7 @@ import (
 	"github.com/hiroyaonoe/bcop-go/protocol/header"
 	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
 	"go.opentelemetry.io/otel/baggage"
+	"golang.org/x/sync/errgroup"
 )
 
 func main() {
@@ -27,14 +28,13 @@ func main() {
 	h := header.NewV1(bag.String())
 	bconn := bcopnet.SenderConn(conn, h)
 
-	_, err = io.Copy(bconn, os.Stdin)
-	if err != nil {
-		if err == io.EOF {
-			return
-		}
-		log.Fatal(err)
-	}
+	var eg errgroup.Group
 
+	eg.Go(func() error { _, err := io.Copy(bconn, os.Stdin); return err })
+	eg.Go(func() error { _, err := io.Copy(os.Stdout, bconn); return err })
+
+	err = eg.Wait()
+	log.Fatal(err)
 }
 
 func TestBaggage() baggage.Baggage {
