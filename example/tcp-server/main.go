@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -12,7 +13,10 @@ import (
 )
 
 func main() {
-	addr := "localhost:8080"
+	port := flag.String("port", "8080", "listen port")
+	flag.Parse()
+
+	addr := "localhost:" + *port
 	ln, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf(err.Error())
