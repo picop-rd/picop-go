@@ -22,7 +22,7 @@ func (l Listener) AcceptWithBCoPConn() (*Conn, error) {
 	bconn := ReceiverConn(conn)
 	bconn.readHeader()
 	if bconn.err != nil {
-		return nil, err
+		return nil, bconn.err
 	}
 
 	return bconn, nil
