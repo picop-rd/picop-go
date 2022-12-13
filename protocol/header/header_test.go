@@ -9,6 +9,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name      string
 		input     []byte
@@ -27,7 +28,9 @@ func TestParse(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			r := bufio.NewReader(bytes.NewReader(tt.input))
 			got, err := Parse(r)
 			if (err != nil) != tt.wantErr {
@@ -43,6 +46,7 @@ func TestParse(t *testing.T) {
 }
 
 func TestHeader_Format(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		value string
@@ -55,7 +59,9 @@ func TestHeader_Format(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			h := NewV1(tt.value)
 			if diff := cmp.Diff(tt.want, h.Format()); diff != "" {
 				t.Errorf("Header.Format() mismatch (-want +got):\n%s", diff)
