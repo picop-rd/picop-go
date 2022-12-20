@@ -46,6 +46,7 @@ func TestBaggage() baggage.Baggage {
 	m1p2, _ := baggage.NewKeyValueProperty("p2Key", "p2Value")
 	m1, _ := baggage.NewMember("m1Key", "m1Value", m1p1, m1p2)
 	m2, _ := baggage.NewMember("m2Key", "m2Value")
-	b, _ := baggage.New(m1, m2)
+	m3, _ := baggage.NewMember("env-id", "aaaaa")
+	b, _ := baggage.New(m1, m2, m3)
 	return b
 }
