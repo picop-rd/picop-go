@@ -76,6 +76,10 @@ func (c *Conn) readHeader() {
 		})
 	}
 }
+func (c *Conn) WriteHeader() error {
+	c.writeHeader()
+	return c.err
+}
 
 func (c *Conn) writeHeader() {
 	if c.connType == typeSender {
