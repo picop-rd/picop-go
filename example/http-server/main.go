@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -15,10 +16,13 @@ import (
 )
 
 func main() {
+	port := flag.String("port", "8080", "listen port")
+	flag.Parse()
+
 	http.HandleFunc("/", handler)
 
 	server := &http.Server{
-		Addr:        ":8080",
+		Addr:        ":" + *port,
 		Handler:     bcophttp.NewHandler(http.DefaultServeMux, otelprop.Baggage{}),
 		ConnContext: bcophttp.ConnContext,
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"io"
 	"log"
 	"net/http"
@@ -15,6 +16,8 @@ import (
 )
 
 func main() {
+	port := flag.String("port", "8080", "request port")
+	flag.Parse()
 	// 伝播されたContextを用意
 	bag := TestBaggage()
 	h := header.NewV1(bag.String())
@@ -24,7 +27,7 @@ func main() {
 		Transport: bcophttp.NewTransport(nil, otelprop.Baggage{}),
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080", nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", "http://localhost:"+*port, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
