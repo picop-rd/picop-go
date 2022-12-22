@@ -22,7 +22,7 @@ func NewTransport(base *http.Transport, propagator otelprop.TextMapPropagator) T
 	}
 
 	t := Transport{
-		Transport:  base,
+		Transport:  base.Clone(),
 		propagator: propagator,
 	}
 
