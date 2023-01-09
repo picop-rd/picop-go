@@ -13,18 +13,23 @@ func TestParse(t *testing.T) {
 	tests := []struct {
 		name      string
 		input     []byte
-		wantValue string
+		wantValue MIMEHeader
 		wantErr   bool
 	}{
 		{
 			name:      "headerのみを正常に受理できる",
-			input:     makeV1Header(11, "key1=value1"),
-			wantValue: "key1=value1",
+			input:     makeV1Header(11, "key1:value1"),
+			wantValue: makeMIMEHeader("key1", "value1"),
 		},
 		{
 			name:      "header+追加データを正常に受理できる",
-			input:     makeV1Header(11, "key1=value1testtest"),
-			wantValue: "key1=value1",
+			input:     makeV1Header(11, "key1:value1testtest"),
+			wantValue: makeMIMEHeader("key1", "value1"),
+		},
+		{
+			name:      "複数headerを正常に受理できる",
+			input:     makeV1Header(39, "key1:value1\r\nkey2:value21\r\nkey2:value22"),
+			wantValue: makeMIMEHeader("key1", "value1", "key2", "value21", "key2", "value22"),
 		},
 	}
 	for _, tt := range tests {
@@ -37,7 +42,7 @@ func TestParse(t *testing.T) {
 				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			opts := cmp.AllowUnexported(Header{})
+			opts := cmp.AllowUnexported(Header{}, MIMEHeader{})
 			if diff := cmp.Diff(NewV1(tt.wantValue), got, opts); diff != "" {
 				t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
 			}
@@ -49,13 +54,18 @@ func TestHeader_Format(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name  string
-		value string
+		value MIMEHeader
 		want  []byte
 	}{
 		{
 			name:  "正しくヘッダをフォーマットできる",
-			value: "key1=value1",
-			want:  makeV1Header(11, "key1=value1"),
+			value: makeMIMEHeader("key1", "value1"),
+			want:  makeV1Header(11, "Key1:value1"),
+		},
+		{
+			name:  "正しく複数ヘッダをフォーマットできる",
+			value: makeMIMEHeader("key1", "value1", "key2", "value21", "key2", "value22"),
+			want:  makeV1Header(39, "Key1:value1\r\nKey2:value21\r\nKey2:value22"),
 		},
 	}
 	for _, tt := range tests {
@@ -73,4 +83,12 @@ func TestHeader_Format(t *testing.T) {
 func makeV1Header(l int, d string) []byte {
 	ret := append(SignatureV1, byte(l))
 	return append(ret, []byte(d)...)
+}
+
+func makeMIMEHeader(kv ...string) MIMEHeader {
+	h := NewMIMEHeader()
+	for i := 0; i < len(kv); i = i + 2 {
+		h.Add(kv[i], kv[i+1])
+	}
+	return h
 }
