@@ -42,8 +42,10 @@ func TestParse(t *testing.T) {
 				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			wantHeader := NewV1()
+			wantHeader.Set(tt.wantValue)
 			opts := cmp.AllowUnexported(Header{}, MIMEHeader{})
-			if diff := cmp.Diff(NewV1(tt.wantValue), got, opts); diff != "" {
+			if diff := cmp.Diff(wantHeader, got, opts); diff != "" {
 				t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
 			}
 		})
@@ -72,7 +74,8 @@ func TestHeader_Format(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			h := NewV1(tt.value)
+			h := NewV1()
+			h.Set(tt.value)
 			if diff := cmp.Diff(tt.want, h.Format()); diff != "" {
 				t.Errorf("Header.Format() mismatch (-want +got):\n%s", diff)
 			}

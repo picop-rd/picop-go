@@ -20,10 +20,10 @@ type Header struct {
 }
 
 // NewV1 return BCoP V1 Header.
-func NewV1(value MIMEHeader) *Header {
+func NewV1() *Header {
 	return &Header{
 		version: 1,
-		value:   value,
+		value:   NewMIMEHeader(),
 	}
 }
 
