@@ -17,19 +17,14 @@ func NewBCoPCarrier(h *header.Header) BCoPCarrier {
 }
 
 func (bc BCoPCarrier) Get(key string) string {
-	return bc.Header.Get().Get(key)
+	return bc.Header.Get(key)
 }
 
 func (bc BCoPCarrier) Set(key, value string) {
-	bc.Header.Get().Set(key, value)
+	bc.Header.Set(key, value)
 	return
 }
 
 func (bc BCoPCarrier) Keys() []string {
-	mimeHeader := bc.Header.Get().MIMEHeader
-	keys := make([]string, 0, len(mimeHeader))
-	for k := range mimeHeader {
-		keys = append(keys, k)
-	}
-	return keys
+	return bc.Header.Keys()
 }

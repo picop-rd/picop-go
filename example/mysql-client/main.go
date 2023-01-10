@@ -15,7 +15,7 @@ import (
 func main() {
 	// 伝播されたContextを用意
 	h := header.NewV1()
-	h.Get().Set("env-id", "aaaaa")
+	h.Set("env-id", "aaaaa")
 	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewBCoPCarrier(h))
 
 	bcopmysql.RegisterDialContext("tcp", propagation.EnvID{})

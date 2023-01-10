@@ -27,7 +27,7 @@ func main() {
 	defer conn.Close()
 
 	h := header.NewV1()
-	h.Get().Set("env-id", "aaaaa")
+	h.Set("env-id", "aaaaa")
 	bconn := bcopnet.SenderConn(conn, h)
 
 	var eg errgroup.Group

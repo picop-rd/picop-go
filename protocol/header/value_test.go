@@ -35,3 +35,11 @@ func TestMIMEHeader_String(t *testing.T) {
 		})
 	}
 }
+
+func makeMIMEHeader(kv ...string) MIMEHeader {
+	h := NewMIMEHeader()
+	for i := 0; i < len(kv); i = i + 2 {
+		h.Add(kv[i], kv[i+1])
+	}
+	return h
+}

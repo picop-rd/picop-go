@@ -27,12 +27,33 @@ func NewV1() *Header {
 	}
 }
 
-func (h Header) Get() MIMEHeader {
-	return h.value
+func (h Header) Add(key, value string) {
+	h.value.Add(key, value)
 }
 
-func (h *Header) Set(value MIMEHeader) {
-	h.value = value
+func (h Header) Set(key, value string) {
+	h.value.Set(key, value)
+}
+
+func (h Header) Get(key string) string {
+	return h.value.Get(key)
+}
+
+func (h Header) Values(key string) []string {
+	return h.value.Values(key)
+}
+
+func (h Header) Del(key string) {
+	h.value.Del(key)
+}
+
+func (h Header) Keys() []string {
+	mimeHeader := h.value.MIMEHeader
+	keys := make([]string, 0, len(mimeHeader))
+	for k := range mimeHeader {
+		keys = append(keys, k)
+	}
+	return keys
 }
 
 func (h Header) String() string {
