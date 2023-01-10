@@ -27,7 +27,7 @@ func DialContext(netP string, propagator otelprop.TextMapPropagator) mysql.DialC
 			return nil, err
 		}
 
-		h := header.NewV1("")
+		h := header.NewV1()
 		propagator.Inject(ctx, bcopprop.NewBCoPCarrier(h))
 
 		bconn := bcopnet.SenderConn(conn, h)

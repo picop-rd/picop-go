@@ -16,31 +16,31 @@ var (
 
 type Header struct {
 	version byte
-	value   string
+	value   MIMEHeader
 }
 
-// NewV1 return BCoP V1 Header. The value must be baggage format. (Must not contain CR and LF)
-func NewV1(value string) *Header {
+// NewV1 return BCoP V1 Header.
+func NewV1() *Header {
 	return &Header{
 		version: 1,
-		value:   value,
+		value:   NewMIMEHeader(),
 	}
 }
 
-func (h Header) Get() string {
+func (h Header) Get() MIMEHeader {
 	return h.value
 }
 
-func (h *Header) Set(value string) {
+func (h *Header) Set(value MIMEHeader) {
 	h.value = value
 }
 
 func (h Header) String() string {
-	return fmt.Sprintf("BCoP Header{ version: %d, value: %s }", h.version, h.value)
+	return fmt.Sprintf("BCoP Header{ version: %d, value: %s }", h.version, h.value.String())
 }
 
 func (h Header) Format() []byte {
-	b := []byte(h.value)
+	b := []byte(h.value.String())
 	ret := append(SignatureV1, byte(len(b)))
 	return append(ret, b...)
 }
@@ -71,17 +71,22 @@ func parseV1(r io.Reader) (*Header, error) {
 	length := make([]byte, 1)
 	_, err := r.Read(length)
 	if err != nil {
-		return nil, fmt.Errorf(ErrCannotReadV1Header.Error()+": %v", err)
+		return nil, fmt.Errorf("%s: %v", ErrCannotReadV1Header.Error(), err)
 	}
 
 	data := make([]byte, int(length[0]))
 	_, err = r.Read(data)
 	if err != nil {
-		return nil, fmt.Errorf(ErrCannotReadV1Header.Error()+": %v", err)
+		return nil, fmt.Errorf("%s: %v", ErrCannotReadV1Header.Error(), err)
+	}
+
+	mimeHeader, err := parseMIMEHeader(string(data))
+	if err != nil {
+		return nil, fmt.Errorf("%s: %v", ErrCannotReadV1Header.Error(), err)
 	}
 
 	return &Header{
 		version: 1,
-		value:   string(data),
+		value:   mimeHeader,
 	}, nil
 }
