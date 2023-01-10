@@ -41,10 +41,15 @@ func parseMIMEHeader(data string) (MIMEHeader, error) {
 	h := NewMIMEHeader()
 	for _, kv := range kvs {
 		p := strings.Split(kv, ":")
-		if len(p) != 2 {
+		var k, v string
+		switch len(p) {
+		case 1:
+			k = p[0]
+		case 2:
+			k, v = p[0], p[1]
+		default:
 			return MIMEHeader{}, errors.New("invalid header")
 		}
-		k, v := p[0], p[1]
 		h.Add(k, v)
 	}
 	return h, nil
