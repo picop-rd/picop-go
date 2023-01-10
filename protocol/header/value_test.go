@@ -2,6 +2,8 @@ package header
 
 import (
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestMIMEHeader_String(t *testing.T) {
@@ -16,13 +18,19 @@ func TestMIMEHeader_String(t *testing.T) {
 			header: makeMIMEHeader("key1", "value1"),
 			want:   "Key1:value1",
 		},
+		{
+			name:   "正しく複数ヘッダをフォーマットできる",
+			header: makeMIMEHeader("key1", "value1", "key2", "value21", "key2", "value22"),
+			want:   "Key1:value1\r\nKey2:value21\r\nKey2:value22",
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			if got := tt.header.String(); got != tt.want {
-				t.Errorf("MIMEHeader.String() = %v, want %v", got, tt.want)
+			got := tt.header.String()
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("MIMEHeader.String() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
