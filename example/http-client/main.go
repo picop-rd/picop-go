@@ -18,7 +18,7 @@ func main() {
 	flag.Parse()
 	// 伝播されたContextを用意
 	h := header.NewV1()
-	h.Set("env-id", "aaaaa")
+	h.Set(propagation.EnvIDHeader, "aaaaa")
 	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewBCoPCarrier(h))
 
 	client := &http.Client{

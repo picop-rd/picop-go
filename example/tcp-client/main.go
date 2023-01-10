@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/hiroyaonoe/bcop-go/propagation"
 	"github.com/hiroyaonoe/bcop-go/protocol/header"
 	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
 	"golang.org/x/sync/errgroup"
@@ -27,7 +28,7 @@ func main() {
 	defer conn.Close()
 
 	h := header.NewV1()
-	h.Set("env-id", "aaaaa")
+	h.Set(propagation.EnvIDHeader, "aaaaa")
 	bconn := bcopnet.SenderConn(conn, h)
 
 	var eg errgroup.Group

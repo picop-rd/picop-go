@@ -10,7 +10,7 @@ type envIDKeyType int
 
 const envIDKey envIDKeyType = iota
 
-const envIDHeader = "env-id"
+const EnvIDHeader = "env-id"
 
 type EnvID struct{}
 
@@ -20,13 +20,13 @@ func (e EnvID) Inject(ctx context.Context, carrier propagation.TextMapCarrier) {
 	switch v := ctx.Value(envIDKey).(type) {
 	case string:
 		if v != "" {
-			carrier.Set(envIDHeader, v)
+			carrier.Set(EnvIDHeader, v)
 		}
 	}
 }
 
 func (e EnvID) Extract(parent context.Context, carrier propagation.TextMapCarrier) context.Context {
-	v := carrier.Get(envIDHeader)
+	v := carrier.Get(EnvIDHeader)
 	if v == "" {
 		return parent
 	}
@@ -34,5 +34,5 @@ func (e EnvID) Extract(parent context.Context, carrier propagation.TextMapCarrie
 }
 
 func (e EnvID) Fields() []string {
-	return []string{envIDHeader}
+	return []string{EnvIDHeader}
 }
