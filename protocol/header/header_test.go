@@ -31,6 +31,17 @@ func TestParse(t *testing.T) {
 			input:     makeV1HeaderByte(39, "key1:value1\r\nkey2:value21\r\nkey2:value22"),
 			wantValue: makeV1HeaderStruct("key1", "value1", "key2", "value21", "key2", "value22"),
 		},
+		{
+			name:      "valueが\"\"でも正常に受理できる",
+			input:     makeV1HeaderByte(5, "key1:"),
+			wantValue: makeV1HeaderStruct("key1", ""),
+		},
+		{
+			name:      "valueに:があるとエラー",
+			input:     makeV1HeaderByte(11, "key1:va:ue1"),
+			wantValue: nil,
+			wantErr:   true,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
