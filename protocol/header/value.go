@@ -26,6 +26,9 @@ func (h MIMEHeader) String() string {
 			ret = append(ret, k, ":", v, "\r\n")
 		}
 	}
+	if len(ret) <= 1 {
+		return ""
+	}
 	return strings.Join(ret[:len(ret)-1], "") // 最後の\r\nを削除
 }
 
@@ -37,8 +40,7 @@ func parseMIMEHeader(data string) (MIMEHeader, error) {
 		if len(p) != 2 {
 			return MIMEHeader{}, errors.New("invalid header")
 		}
-		k := p[0]
-		v := p[1]
+		k, v := p[0], p[1]
 		h.Add(k, v)
 	}
 	return h, nil
