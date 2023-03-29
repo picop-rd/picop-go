@@ -1,2 +1,2 @@
-# bcop-go
-BCoP Go実装
+# picop-go
+PiCoP Implementation for Go

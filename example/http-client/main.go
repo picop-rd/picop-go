@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/hiroyaonoe/bcop-go/contrib/net/http/bcophttp"
-	"github.com/hiroyaonoe/bcop-go/propagation"
-	"github.com/hiroyaonoe/bcop-go/protocol/header"
+	"github.com/picop-rd/picop-go/contrib/net/http/picophttp"
+	"github.com/picop-rd/picop-go/propagation"
+	"github.com/picop-rd/picop-go/protocol/header"
 )
 
 func main() {
@@ -19,10 +19,10 @@ func main() {
 	// 伝播されたContextを用意
 	h := header.NewV1()
 	h.Set(propagation.EnvIDHeader, "aaaaa")
-	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewBCoPCarrier(h))
+	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewPiCoPCarrier(h))
 
 	client := &http.Client{
-		Transport: bcophttp.NewTransport(nil, propagation.EnvID{}),
+		Transport: picophttp.NewTransport(nil, propagation.EnvID{}),
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", "http://localhost:"+*port, nil)

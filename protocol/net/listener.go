@@ -13,7 +13,7 @@ var _ net.Listener = Listener{}
 func NewListener(l net.Listener) Listener {
 	return Listener{l}
 }
-func (l Listener) AcceptWithBCoPConn() (*Conn, error) {
+func (l Listener) AcceptWithPiCoPConn() (*Conn, error) {
 	conn, err := l.Listener.Accept()
 	if err != nil {
 		return nil, err
@@ -29,5 +29,5 @@ func (l Listener) AcceptWithBCoPConn() (*Conn, error) {
 }
 
 func (l Listener) Accept() (net.Conn, error) {
-	return l.AcceptWithBCoPConn()
+	return l.AcceptWithPiCoPConn()
 }

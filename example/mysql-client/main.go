@@ -6,19 +6,19 @@ import (
 	"fmt"
 	"log"
 
-	// _ "github.com/go-sql-driver/mysql" bcopmysql内でimportされるので不要
-	"github.com/hiroyaonoe/bcop-go/contrib/github.com/go-sql-driver/mysql/bcopmysql"
-	"github.com/hiroyaonoe/bcop-go/propagation"
-	"github.com/hiroyaonoe/bcop-go/protocol/header"
+	// _ "github.com/go-sql-driver/mysql" picopmysql内でimportされるので不要
+	"github.com/picop-rd/picop-go/contrib/github.com/go-sql-driver/mysql/picopmysql"
+	"github.com/picop-rd/picop-go/propagation"
+	"github.com/picop-rd/picop-go/protocol/header"
 )
 
 func main() {
 	// 伝播されたContextを用意
 	h := header.NewV1()
 	h.Set(propagation.EnvIDHeader, "aaaaa")
-	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewBCoPCarrier(h))
+	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewPiCoPCarrier(h))
 
-	bcopmysql.RegisterDialContext("tcp", propagation.EnvID{})
+	picopmysql.RegisterDialContext("tcp", propagation.EnvID{})
 
 	db, err := sql.Open("mysql", "root:@tcp(localhost:9000)/test")
 	if err != nil {

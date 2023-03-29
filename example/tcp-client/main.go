@@ -7,9 +7,9 @@ import (
 	"net"
 	"os"
 
-	"github.com/hiroyaonoe/bcop-go/propagation"
-	"github.com/hiroyaonoe/bcop-go/protocol/header"
-	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	"github.com/picop-rd/picop-go/propagation"
+	"github.com/picop-rd/picop-go/protocol/header"
+	picopnet "github.com/picop-rd/picop-go/protocol/net"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -29,7 +29,7 @@ func main() {
 
 	h := header.NewV1()
 	h.Set(propagation.EnvIDHeader, "aaaaa")
-	bconn := bcopnet.SenderConn(conn, h)
+	bconn := picopnet.SenderConn(conn, h)
 
 	var eg errgroup.Group
 

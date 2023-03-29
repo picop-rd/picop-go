@@ -1,13 +1,13 @@
-package bcophttp
+package picophttp
 
 import (
 	"context"
 	"net"
 	"net/http"
 
-	bcopprop "github.com/hiroyaonoe/bcop-go/propagation"
-	"github.com/hiroyaonoe/bcop-go/protocol/header"
-	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	picopprop "github.com/picop-rd/picop-go/propagation"
+	"github.com/picop-rd/picop-go/protocol/header"
+	picopnet "github.com/picop-rd/picop-go/protocol/net"
 	otelprop "go.opentelemetry.io/otel/propagation"
 )
 
@@ -45,9 +45,9 @@ func wrapDialContext(dc func(ctx context.Context, network, addr string) (net.Con
 		}
 
 		h := header.NewV1()
-		propagator.Inject(ctx, bcopprop.NewBCoPCarrier(h))
+		propagator.Inject(ctx, picopprop.NewPiCoPCarrier(h))
 
-		bconn := bcopnet.SenderConn(conn, h)
+		bconn := picopnet.SenderConn(conn, h)
 		return bconn, err
 	}
 }

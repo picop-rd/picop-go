@@ -1,13 +1,13 @@
-package bcopmysql
+package picopmysql
 
 import (
 	"context"
 	"net"
 
 	"github.com/go-sql-driver/mysql"
-	bcopprop "github.com/hiroyaonoe/bcop-go/propagation"
-	"github.com/hiroyaonoe/bcop-go/protocol/header"
-	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	picopprop "github.com/picop-rd/picop-go/propagation"
+	"github.com/picop-rd/picop-go/protocol/header"
+	picopnet "github.com/picop-rd/picop-go/protocol/net"
 	otelprop "go.opentelemetry.io/otel/propagation"
 )
 
@@ -28,9 +28,9 @@ func DialContext(netP string, propagator otelprop.TextMapPropagator) mysql.DialC
 		}
 
 		h := header.NewV1()
-		propagator.Inject(ctx, bcopprop.NewBCoPCarrier(h))
+		propagator.Inject(ctx, picopprop.NewPiCoPCarrier(h))
 
-		bconn := bcopnet.SenderConn(conn, h)
+		bconn := picopnet.SenderConn(conn, h)
 		err = bconn.WriteHeader()
 		if err != nil {
 			return nil, err

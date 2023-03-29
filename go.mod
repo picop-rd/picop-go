@@ -1,4 +1,4 @@
-module github.com/hiroyaonoe/bcop-go
+module github.com/picop-rd/picop-go
 
 go 1.18
 

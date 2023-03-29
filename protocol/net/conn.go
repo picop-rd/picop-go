@@ -5,7 +5,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/hiroyaonoe/bcop-go/protocol/header"
+	"github.com/picop-rd/picop-go/protocol/header"
 )
 
 type connType int

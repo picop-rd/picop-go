@@ -10,8 +10,8 @@ import (
 var (
 	SignatureV1 = []byte{'\x0D', '\x0A', '\x0D', '\x0A', '\x00', '\x0D', '\x0A', '\x51', '\x55', '\x49', '\x54', '\x0A', '\x01'}
 
-	ErrNoBCoP             = errors.New("BCoP: signature not present")
-	ErrCannotReadV1Header = errors.New("BCoP: cannot read v1 header")
+	ErrNoPiCoP            = errors.New("PiCoP: signature not present")
+	ErrCannotReadV1Header = errors.New("PiCoP: cannot read v1 header")
 )
 
 type Header struct {
@@ -19,7 +19,7 @@ type Header struct {
 	value   MIMEHeader
 }
 
-// NewV1 return BCoP V1 Header.
+// NewV1 return PiCoP V1 Header.
 func NewV1() *Header {
 	return &Header{
 		version: 1,
@@ -57,7 +57,7 @@ func (h Header) Keys() []string {
 }
 
 func (h Header) String() string {
-	return fmt.Sprintf("BCoP Header{ version: %d, value: %s }", h.version, h.value.String())
+	return fmt.Sprintf("PiCoP Header{ version: %d, value: %s }", h.version, h.value.String())
 }
 
 func (h Header) Format() []byte {
@@ -77,7 +77,7 @@ func Parse(r io.Reader) (*Header, error) {
 	_, err := r.Read(sign)
 	if err != nil {
 		if err == io.EOF {
-			return nil, ErrNoBCoP
+			return nil, ErrNoPiCoP
 		}
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func Parse(r io.Reader) (*Header, error) {
 	if bytes.Equal(sign, SignatureV1) {
 		return parseV1(r)
 	}
-	return nil, ErrNoBCoP
+	return nil, ErrNoPiCoP
 }
 
 func parseV1(r io.Reader) (*Header, error) {

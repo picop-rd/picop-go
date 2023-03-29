@@ -8,10 +8,10 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/hiroyaonoe/bcop-go/contrib/net/http/bcophttp"
-	"github.com/hiroyaonoe/bcop-go/propagation"
-	"github.com/hiroyaonoe/bcop-go/protocol/header"
-	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	"github.com/picop-rd/picop-go/contrib/net/http/picophttp"
+	"github.com/picop-rd/picop-go/propagation"
+	"github.com/picop-rd/picop-go/protocol/header"
+	picopnet "github.com/picop-rd/picop-go/protocol/net"
 )
 
 func main() {
@@ -22,8 +22,8 @@ func main() {
 
 	server := &http.Server{
 		Addr:        ":" + *port,
-		Handler:     bcophttp.NewHandler(http.DefaultServeMux, propagation.EnvID{}),
-		ConnContext: bcophttp.ConnContext,
+		Handler:     picophttp.NewHandler(http.DefaultServeMux, propagation.EnvID{}),
+		ConnContext: picophttp.ConnContext,
 	}
 
 	ln, err := net.Listen("tcp", server.Addr)
@@ -31,7 +31,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	bln := bcopnet.NewListener(ln)
+	bln := picopnet.NewListener(ln)
 
 	log.Fatal(server.Serve(bln))
 }
@@ -39,7 +39,7 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	// 伝播されたContextを確認
 	h := header.NewV1()
-	propagation.EnvID{}.Inject(r.Context(), propagation.NewBCoPCarrier(h))
+	propagation.EnvID{}.Inject(r.Context(), propagation.NewPiCoPCarrier(h))
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, fmt.Sprintf("BCoP Header Accepted: %s\n", h))
+	io.WriteString(w, fmt.Sprintf("PiCoP Header Accepted: %s\n", h))
 }

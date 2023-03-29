@@ -8,7 +8,7 @@ import (
 	"net"
 	"os"
 
-	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	picopnet "github.com/picop-rd/picop-go/protocol/net"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -22,9 +22,9 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	bln := bcopnet.NewListener(ln)
+	bln := picopnet.NewListener(ln)
 
-	bconn, err := bln.AcceptWithBCoPConn()
+	bconn, err := bln.AcceptWithPiCoPConn()
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -34,7 +34,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("BCoP Header Accepted: %s\n", header)
+	fmt.Printf("PiCoP Header Accepted: %s\n", header)
 
 	var eg errgroup.Group
 
