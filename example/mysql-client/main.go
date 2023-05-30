@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"log"
 
-	// _ "github.com/go-sql-driver/mysql" picopmysql内でimportされるので不要
+	// _ "github.com/go-sql-driver/mysql" // Not required because it is imported by picopmysql
 	"github.com/picop-rd/picop-go/contrib/github.com/go-sql-driver/mysql/picopmysql"
 	"github.com/picop-rd/picop-go/propagation"
 	"github.com/picop-rd/picop-go/protocol/header"
 )
 
 func main() {
-	// 伝播されたContextを用意
+	// Prepare propagated context
 	h := header.NewV1()
 	h.Set(propagation.EnvIDHeader, "aaaaa")
 	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewPiCoPCarrier(h))
@@ -25,7 +25,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	db.SetMaxIdleConns(0)
+	db.SetMaxIdleConns(0) // Requests with different headers must not use the same connection.
 
 	_, err = db.ExecContext(ctx, "INSERT INTO books(id, name) VALUES (1, \"test1\")")
 	if err != nil {

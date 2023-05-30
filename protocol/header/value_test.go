@@ -14,12 +14,12 @@ func TestMIMEHeader_String(t *testing.T) {
 		want   string
 	}{
 		{
-			name:   "正しくフォーマットできる",
+			name:   "It can format a header.",
 			header: makeMIMEHeader("key1", "value1"),
 			want:   "Key1:value1",
 		},
 		{
-			name:   "正しく複数ヘッダをフォーマットできる",
+			name:   "It can format headers.",
 			header: makeMIMEHeader("key1", "value1", "key2", "value21", "key2", "value22"),
 			want:   "Key1:value1\r\nKey2:value21\r\nKey2:value22",
 		},

@@ -37,7 +37,7 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	// 伝播されたContextを確認
+	// Confirm propagated context
 	h := header.NewV1()
 	propagation.EnvID{}.Inject(r.Context(), propagation.NewPiCoPCarrier(h))
 	w.WriteHeader(http.StatusOK)

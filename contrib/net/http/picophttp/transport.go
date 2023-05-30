@@ -29,7 +29,7 @@ func NewTransport(base *http.Transport, propagator otelprop.TextMapPropagator) T
 	t.DialContext = wrapDialContext(base.DialContext, propagator)
 	t.DialTLSContext = wrapDialContext(base.DialTLSContext, propagator)
 
-	// 異なるヘッダのリクエスト同士が同じコネクション使ってはいけない
+	// Requests with different headers must not use the same connection.
 	t.DisableKeepAlives = true
 	return t
 }

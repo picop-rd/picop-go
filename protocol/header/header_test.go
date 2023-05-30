@@ -17,27 +17,27 @@ func TestParse(t *testing.T) {
 		wantErr   bool
 	}{
 		{
-			name:      "headerのみを正常に受理できる",
+			name:      "It can accept only a header.",
 			input:     makeV1HeaderByte(11, "key1:value1"),
 			wantValue: makeV1HeaderStruct("key1", "value1"),
 		},
 		{
-			name:      "header+追加データを正常に受理できる",
+			name:      "It can accept a header and additional data.",
 			input:     makeV1HeaderByte(11, "key1:value1testtest"),
 			wantValue: makeV1HeaderStruct("key1", "value1"),
 		},
 		{
-			name:      "複数headerを正常に受理できる",
+			name:      "It can accept headers.",
 			input:     makeV1HeaderByte(39, "key1:value1\r\nkey2:value21\r\nkey2:value22"),
 			wantValue: makeV1HeaderStruct("key1", "value1", "key2", "value21", "key2", "value22"),
 		},
 		{
-			name:      "valueが\"\"でも正常に受理できる",
+			name:      "It can accept an empty value",
 			input:     makeV1HeaderByte(5, "key1:"),
 			wantValue: makeV1HeaderStruct("key1", ""),
 		},
 		{
-			name:      "valueに:があるとエラー",
+			name:      "It can raise an error if the value has :",
 			input:     makeV1HeaderByte(11, "key1:va:ue1"),
 			wantValue: nil,
 			wantErr:   true,
@@ -69,12 +69,12 @@ func TestHeader_Format(t *testing.T) {
 		want  []byte
 	}{
 		{
-			name:  "正しくヘッダをフォーマットできる",
+			name:  "It can format a header.",
 			value: makeV1HeaderStruct("key1", "value1"),
 			want:  makeV1HeaderByte(11, "Key1:value1"),
 		},
 		{
-			name:  "正しく複数ヘッダをフォーマットできる",
+			name:  "It can format headers.",
 			value: makeV1HeaderStruct("key1", "value1", "key2", "value21", "key2", "value22"),
 			want:  makeV1HeaderByte(39, "Key1:value1\r\nKey2:value21\r\nKey2:value22"),
 		},

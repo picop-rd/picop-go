@@ -30,6 +30,7 @@ func main() {
 	}
 	defer bconn.Close()
 
+	// Confirm propagated context
 	header, err := bconn.ReadHeader()
 	if err != nil {
 		log.Fatal(err)

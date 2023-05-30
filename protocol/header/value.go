@@ -33,7 +33,7 @@ func (h MIMEHeader) String() string {
 	if len(ret) <= 1 {
 		return ""
 	}
-	return strings.Join(ret[:len(ret)-1], "") // 最後の\r\nを削除
+	return strings.Join(ret[:len(ret)-1], "") // Delete last \r\n
 }
 
 func parseMIMEHeader(data string) (MIMEHeader, error) {

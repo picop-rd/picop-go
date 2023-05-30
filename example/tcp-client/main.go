@@ -27,6 +27,7 @@ func main() {
 	}
 	defer conn.Close()
 
+	// Prepare propagated context
 	h := header.NewV1()
 	h.Set(propagation.EnvIDHeader, "aaaaa")
 	bconn := picopnet.SenderConn(conn, h)

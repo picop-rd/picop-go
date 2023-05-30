@@ -16,7 +16,7 @@ import (
 func main() {
 	port := flag.String("port", "8080", "request port")
 	flag.Parse()
-	// 伝播されたContextを用意
+	// Prepare propagated context
 	h := header.NewV1()
 	h.Set(propagation.EnvIDHeader, "aaaaa")
 	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewPiCoPCarrier(h))
