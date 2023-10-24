@@ -2,7 +2,7 @@
 PiCoP Protocol Library for Go
 
 ## Description
-This repository provide Go library for communicating with PiCoP Protocol.
+This repository provides Go libraries for communicating with PiCoP Protocol.
 
 ## Support
 - `net`([`protocol/net`](./protocol/net`))
