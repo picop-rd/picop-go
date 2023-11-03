@@ -23,3 +23,5 @@ require (
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/text v0.7.0 // indirect
 )
+
+replace go.mongodb.org/mongo-driver => github.com/picop-rd/mongo-go-driver v1.12.1-picop
