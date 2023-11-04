@@ -25,4 +25,7 @@ require (
 	golang.org/x/text v0.7.0 // indirect
 )
 
-replace go.mongodb.org/mongo-driver => github.com/picop-rd/mongo-go-driver v1.12.1-picop
+replace (
+	github.com/bradfitz/gomemcache => github.com/picop-rd/gomemcache v1.0.0-picop
+	go.mongodb.org/mongo-driver => github.com/picop-rd/mongo-go-driver v1.12.1-picop
+)
