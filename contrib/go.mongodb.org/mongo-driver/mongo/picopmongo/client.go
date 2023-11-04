@@ -20,8 +20,7 @@ func New(opts *options.ClientOptions, propagator otelprop.TextMapPropagator) *Cl
 		opts = options.Client()
 	}
 	opts = opts.
-		SetDialer(DialContext(propagation.EnvID{})).
-		SetMaxConnIdleTime(1).SetMaxPoolSize(1) // Requests with different headers must not use the same connection.
+		SetDialer(DialContext(propagation.EnvID{}))
 	return &Client{opts: opts}
 }
 
