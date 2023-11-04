@@ -5,6 +5,7 @@ go 1.18
 require go.opentelemetry.io/otel v1.11.2
 
 require (
+	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/google/go-cmp v0.5.9
 	go.mongodb.org/mongo-driver v1.12.1
