@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/picop-rd/picop-go/propagation"
+	otelprop "go.opentelemetry.io/otel/propagation"
 
 	// Please use github.com/picop-rd/mongo-go-driver instead of go.mongodb.org/mongo-driver by replacing in go.mod
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,7 +15,7 @@ type Client struct {
 	opts *options.ClientOptions
 }
 
-func New(opts *options.ClientOptions) *Client {
+func New(opts *options.ClientOptions, propagator otelprop.TextMapPropagator) *Client {
 	if opts == nil {
 		opts = options.Client()
 	}

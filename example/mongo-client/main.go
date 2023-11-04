@@ -28,7 +28,7 @@ func main() {
 	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewPiCoPCarrier(h))
 
 	uri := "mongodb://localhost:27017"
-	client := picopmongo.New(options.Client().ApplyURI(uri))
+	client := picopmongo.New(options.Client().ApplyURI(uri), propagation.EnvID{})
 
 	conn, err := client.Connect(ctx)
 	if err != nil {
