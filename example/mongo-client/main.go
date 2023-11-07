@@ -28,7 +28,8 @@ func main() {
 	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewPiCoPCarrier(h))
 
 	uri := "mongodb://localhost:27017"
-	client := picopmongo.New(options.Client().ApplyURI(uri), propagation.EnvID{})
+	client := picopmongo.New(options.Client().ApplyURI(uri))
+	defer client.Disconnect(ctx)
 
 	conn, err := client.Connect(ctx)
 	if err != nil {
@@ -41,7 +42,6 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(res.InsertedID)
-	conn.Disconnect(ctx)
 
 	conn, err = client.Connect(ctx)
 	if err != nil {
@@ -51,7 +51,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	conn.Disconnect(ctx)
 
 	data := []Data{}
 	err = cur.All(ctx, &data)
