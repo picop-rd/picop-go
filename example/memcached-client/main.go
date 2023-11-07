@@ -19,9 +19,9 @@ func main() {
 
 	uri := "localhost:11211"
 	pc := picopmc.New(uri)
+	defer pc.Close()
 
 	mc := pc.Connect(ctx)
-	defer mc.Close()
 	err := mc.Set(ctx, &memcache.Item{
 		Key:   "picop-example",
 		Value: []byte("example"),
