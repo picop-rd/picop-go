@@ -18,9 +18,10 @@ func main() {
 	ctx := propagation.EnvID{}.Extract(context.Background(), propagation.NewPiCoPCarrier(h))
 
 	uri := "localhost:11211"
-	pc := picopmc.New(propagation.EnvID{}, uri)
+	pc := picopmc.New(uri)
 
-	mc := pc.Connect()
+	mc := pc.Connect(ctx)
+	defer mc.Close()
 	err := mc.Set(ctx, &memcache.Item{
 		Key:   "picop-example",
 		Value: []byte("example"),
@@ -28,19 +29,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = mc.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	mc = pc.Connect()
 	it, err := mc.Get(ctx, "picop-example")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(string(it.Value))
-	err = mc.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
 }
