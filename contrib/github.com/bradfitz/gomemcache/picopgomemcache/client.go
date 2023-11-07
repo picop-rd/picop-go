@@ -19,7 +19,9 @@ type Client struct {
 
 func New(server ...string) *Client {
 	return &Client{
-		server: server,
+		server:      server,
+		pool:        &sync.Map{},
+		PoolByEnvID: true,
 	}
 }
 
