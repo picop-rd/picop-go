@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package example;
+
+option go_package = "github.com/picop-rd/picop-go/example/grpc-server/proto";
+
+service Example {
+  rpc Get(Request) returns (Result);
+}
+
+message Request {
+  string id = 1;
+}
+
+message Result {
+  string id = 1;
+}
