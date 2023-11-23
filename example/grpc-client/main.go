@@ -34,4 +34,20 @@ func main() {
 		panic(err)
 	}
 	println(res.Id)
+
+	cc.Close()
+
+	cc, err = pc.Connect(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	ec = proto.NewExampleClient(cc)
+	res, err = ec.Get(ctx, &proto.Request{
+		Id: "picop",
+	})
+	if err != nil {
+		panic(err)
+	}
+	println(res.Id)
 }

@@ -8,6 +8,7 @@ import (
 	picopprop "github.com/picop-rd/picop-go/propagation"
 	"github.com/picop-rd/picop-go/protocol/header"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 )
 
 type Client struct {
@@ -40,7 +41,9 @@ func (c *Client) Connect(ctx context.Context) (*grpc.ClientConn, error) {
 	envID := h.Get(propagation.EnvIDHeader)
 
 	if client, ok := c.pool.Load(envID); ok {
-		return client.(*grpc.ClientConn), nil
+		if client.(*grpc.ClientConn).GetState() != connectivity.Shutdown {
+			return client.(*grpc.ClientConn), nil
+		}
 	}
 	cc, err := grpc.DialContext(ctx, c.target, c.opts...)
 	if err != nil {
