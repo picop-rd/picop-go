@@ -37,18 +37,19 @@ func (c *Client) DisablePoolByEnvID() {
 }
 
 func (c *Client) Connect(ctx context.Context) (*mongo.Client, error) {
-	if !c.PoolByEnvID {
-		return mongo.Connect(ctx, c.opts)
-	}
-
 	h := header.NewV1()
 	propagation.EnvID{}.Inject(ctx, picopprop.NewPiCoPCarrier(h))
-	envID := h.Get(propagation.EnvIDHeader)
+	propCtx := propagation.EnvID{}.Extract(context.Background(), picopprop.NewPiCoPCarrier(h)) // reset context
 
+	if !c.PoolByEnvID {
+		return mongo.Connect(propCtx, c.opts)
+	}
+
+	envID := h.Get(propagation.EnvIDHeader)
 	if client, ok := c.pool.Load(envID); ok {
 		return client.(*mongo.Client), nil
 	}
-	nc, err := mongo.Connect(ctx, c.opts)
+	nc, err := mongo.Connect(propCtx, c.opts)
 	if err != nil {
 		return nil, err
 	}

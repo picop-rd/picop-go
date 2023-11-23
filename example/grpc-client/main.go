@@ -35,8 +35,6 @@ func main() {
 	}
 	println(res.Id)
 
-	cc.Close()
-
 	cc, err = pc.Connect(ctx)
 	if err != nil {
 		panic(err)

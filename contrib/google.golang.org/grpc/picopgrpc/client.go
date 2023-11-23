@@ -32,20 +32,21 @@ func (c *Client) DisablePoolByEnvID() {
 }
 
 func (c *Client) Connect(ctx context.Context) (*grpc.ClientConn, error) {
-	if !c.PoolByEnvID {
-		return grpc.DialContext(ctx, c.target, c.opts...)
-	}
-
 	h := header.NewV1()
 	propagation.EnvID{}.Inject(ctx, picopprop.NewPiCoPCarrier(h))
-	envID := h.Get(propagation.EnvIDHeader)
+	propCtx := propagation.EnvID{}.Extract(context.Background(), picopprop.NewPiCoPCarrier(h)) // reset context
 
+	if !c.PoolByEnvID {
+		return grpc.DialContext(propCtx, c.target, c.opts...)
+	}
+
+	envID := h.Get(propagation.EnvIDHeader)
 	if client, ok := c.pool.Load(envID); ok {
 		if client.(*grpc.ClientConn).GetState() != connectivity.Shutdown {
 			return client.(*grpc.ClientConn), nil
 		}
 	}
-	cc, err := grpc.DialContext(ctx, c.target, c.opts...)
+	cc, err := grpc.DialContext(propCtx, c.target, c.opts...)
 	if err != nil {
 		return nil, err
 	}
